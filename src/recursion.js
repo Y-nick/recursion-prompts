@@ -17,6 +17,16 @@ var sum = function(array) {
 // 3. Sum all numbers in an array containing nested arrays.
 // arraySum([1,[2,3],[[4]],5]); // 15
 var arraySum = function(array) {
+  //base case
+  var result = 0;
+  if (!Array.isArray(array)) {
+    result += array;
+  } else {
+    array.forEach(function(item) {
+      result += arraySum(item);
+    });
+  }
+  return result;
 };
 
 // 4. Check if a number is even.
@@ -129,6 +139,25 @@ var rMap = function(array, callback) {
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 var countKeysInObj = function(obj, key) {
+  //I obj and the key occurence you want to find
+  //O is just the number the input you appears in the data
+  var counter = 0;
+  var objKeys;
+  if (typeof(obj) === 'object') {
+    objKeys = Object.keys(obj);
+    objKeys.forEach(function(item) {
+      if (item === key) {
+        counter++;
+      }
+    });
+  }
+  for (var testKey in obj) {
+    if (typeof(obj[testKey]) === 'object') {
+      //Add result of recursive call to the counter!
+      counter += countKeysInObj(obj[testKey], key);
+    }
+  }
+  return counter;
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -136,11 +165,41 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+  var counter = 0;
+  var objVal;
+  if (typeof(obj) === 'object') {
+    objVal = Object.values(obj);
+    objVal.forEach(function(item) {
+      if (item === value) {
+        counter++;
+      }
+    });
+  }
+  for (var thisKey in objVal) {
+    counter += countValuesInObj(objVal[thisKey], value);
+  }
+  return counter;
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+  // if obj at old key is not undefined then delet
+  //then relace
+
+  //base case check if obj
+  if (typeof(obj) === 'object') {
+    if (obj[oldKey] !== undefined) {
+      obj[newKey] = obj[oldKey];
+      delete obj[oldKey];
+    }
+  }
+  for (var key in obj) {
+    if (typeof(obj[key]) === 'object') {
+      replaceKeysInObj(obj[key], oldKey, newKey);
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
